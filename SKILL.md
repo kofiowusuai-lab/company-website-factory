@@ -1,7 +1,7 @@
 ---
 name: company-website-factory
 description: Use when repeatedly creating, redesigning, cloning, or launching polished corporate, portfolio, parent-company, agency, consultancy, or multi-brand marketing websites from short briefs, especially when Next.js, official brand assets, responsive interactions, search discovery, Vercel, or custom domains are involved.
-version: 1.0.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -62,6 +62,8 @@ Create one canonical site-data module for:
 
 UI cards, page copy, footer links, JSON-LD, sitemap, LLM files, counts, and tests should derive from shared data where practical. A roster change is a site-wide migration.
 
+For every roster migration, search for both data and assumptions: written counts, array lengths, ordinal labels, grid rules, odd/even selectors, map coordinates, connector paths, schema, discovery files, and test expectations. Add the new failing roster tests first. Completion requires all public and machine-readable surfaces to agree on the same roster.
+
 ### 4. Build through TDD
 
 Start with behavioral tests covering:
@@ -78,7 +80,7 @@ Watch each focused test fail, implement the smallest passing behavior, then refa
 
 ### 5. Use official assets
 
-Source logos from official live sites, manifests, Open Graph assets, or approved files. Record provenance. Preserve geometry and identity. Do not replace real operation logos with generic marks or text approximations.
+Source logos from official live sites, manifests, Open Graph assets, or approved files. Record provenance. Preserve intrinsic geometry, artwork backgrounds, and identity. Do not replace real operation logos with generic marks or text approximations. Do not add UI-generated frames, padding, borders, rounded backgrounds, or shadows around official logo artwork unless the selected design explicitly requires a shared treatment and visual QA approves every mark.
 
 For destination previews, capture the real linked website as an optimized static image. Desktop previews respond to hover and keyboard focus. Touch receives a persistent or explicit preview treatment. Text and links remain usable if imagery fails.
 
@@ -86,14 +88,17 @@ For destination previews, capture the real linked website as an optimized static
 
 Verify actual rendered pages, not only source or DOM assertions:
 
-- desktop and exact mobile widths, including 320/375/768/1024/1440
+- breakpoint boundaries and representative widths, including 320/340/375/390/600/768/800/1024/1440
 - no horizontal overflow, clipped headings, or unsafe touch targets
+- pairwise geometry checks for interactive maps, cards, labels, connectors, and center elements at every supported responsive mode
 - keyboard navigation, focus contrast, menu open/close, Escape, focus return
 - reduced motion, route-away-and-back animation lifecycle
 - official logo pixels visible against their rendered backgrounds
-- all pages, long content, broken/missing images, and console errors
+- all pages, long content, broken/missing images, lazy-loaded assets after scrolling, and console errors
 
 A screenshot file, HTTP 200, or nonzero image bounds is not visual proof. Inspect the rendered raster or use vision QA.
+
+Responsive QA must test CSS cascade boundaries, not only popular device sizes. A layout that passes at 320 and 390 can still collide at 340, 600, 768, or 800. Encode overlap and overflow checks in Playwright so a later media-query override cannot silently restore a defect.
 
 ### 7. Ship SEO, AEO, GEO, and AI discovery together
 
@@ -121,11 +126,15 @@ npm run test:e2e
 
 Adapt only when scripts differ. Keep unit and Playwright collection scopes separate. Stop old Next processes before rebuilding `.next`, then start a fresh production server for browser tests.
 
+When one browser case fails once, diagnose before editing product code. Re-run the isolated case enough times to distinguish a deterministic defect from a timing flake, then rerun the complete suite unchanged. A flaky pass never replaces the final full-suite gate. If local build or package caches are corrupt, use a clean isolated cache and record the substitution.
+
 Review the final diff, staged files, secrets, generated noise, commit author, and source-reference remnants. Do not deploy any failed or unreviewed visual state.
 
 ### 9. Deploy and verify Vercel
 
-Deploy the tested commit. Verify the stable production alias through raw HTTP and rendered desktop/mobile checks. A successful Vercel build is not release approval.
+Deploy the tested commit and record its SHA. Verify the stable production alias through raw HTTP and rendered desktop/mobile checks. Deployment-specific URLs may be protected, so test every public stable alias independently. A successful Vercel build is not release approval.
+
+Production verification must prove the changed facts and geometry, not only availability: expected roster count, exact external destinations, visible legal markers, logo load state after lazy loading, horizontal containment, and zero pairwise collisions. Confirm the deployed commit when the platform exposes it.
 
 For a custom domain:
 
@@ -136,6 +145,22 @@ For a custom domain:
 5. Verify Vercel domain state, HTTPS certificates, expected content, and canonical-host behavior separately.
 
 Do not claim IndexNow submission, DNS completion, TLS completion, or redirects from preparation alone. Capture the actual response or observed behavior.
+
+### 10. Preserve artifact scope in source control
+
+Resolve pronouns such as “commit it,” “push this,” or “put this on GitHub” against the artifact produced immediately before the request. If the session just created or updated this reusable skill, publish the skill itself. Do not pivot to a generated website merely because its repository has pending changes.
+
+Before any commit:
+
+1. State the exact artifact and intended repository in one line.
+2. Locate the repository containing that artifact. Treat unrelated dirty repositories as out of scope.
+3. If the skill is installed outside Git, create a clean standalone source repository containing `SKILL.md`, referenced files, templates, scripts, and concise install/usage documentation.
+4. Compare the packaged files with the installed skill byte-for-byte and run script syntax plus deterministic guard tests.
+5. Commit only scoped files, push, then read repository visibility, default branch, and commit SHA back from GitHub. Confirm local `HEAD`, remote branch, and GitHub API SHA match.
+
+Default a newly published internal skill repository to private unless the user requested public distribution. If scope was misidentified during inspection, correct course before creating a remote, restore any unrelated local edits made by the agent, and continue with the intended artifact.
+
+See `references/source-control-and-skill-publishing.md` for the reusable packaging and verification recipe.
 
 ## Parallel execution
 
@@ -158,7 +183,10 @@ Do not publish when any of these remains:
 - Reusing the previous site's appearance instead of its workflow.
 - Coding before visual direction is selected.
 - Duplicating portfolio/service facts across components and schema.
+- Updating a roster card while leaving stale counts, map geometry, discovery text, or structured data.
+- Wrapping official logo artwork in generic white tiles or decorative frames.
 - Treating tests as visual approval.
+- Checking only endpoint viewport sizes while missing breakpoint-boundary collisions.
 - Checking only the deployment URL, not the stable custom domain.
 - Publishing `llms.txt` as hidden SEO spam.
 - Preparing an IndexNow key and reporting a completed submission.

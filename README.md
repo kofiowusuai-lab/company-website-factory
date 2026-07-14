@@ -8,6 +8,7 @@ A reusable Hermes skill for producing distinctive, production-ready company webs
 - `scripts/new-company-site.sh`: Next.js project scaffold
 - `templates/website-spec.md`: structured discovery and website specification
 - `references/release-checklist.md`: fail-closed release and domain checklist
+- `references/source-control-and-skill-publishing.md`: scoped GitHub publishing and SHA verification
 
 ## Install for Hermes
 
